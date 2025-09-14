@@ -1,3 +1,16 @@
+
+# ACTIVIDAD 1b -Sugeno SPY-
+# Cargar el conjunto de datos del valor de las acciones del S&P 500 que 
+# se ofrecen a continuación y graficarlo. Si lo prefiere, puede elegir un subconjunto de diez años dentro del dataset.
+# Entrenar diferentes modelos de Sugeno con todos ellos, variando la 
+# cantidad de reglas R (O el parámetro de radio de vecindad del clustering sustractivo, si corresponde). Graficar el error cuadrático medio (MSE) vs. R.
+# Elegir uno de los modelos según la mejor relación entre R y el MSE obtenido.
+# Sobremuestrear la señal, barriendo la variable de entrada para tener muchos más valores de muestras que con los datos originales y utilizando el modelo de Sugeno seleccionado.
+# Extrapole los precios futuros de las acciones a partir de su modelo y grafique.
+
+
+
+from matplotlib import figure
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -9,6 +22,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from scipy.spatial import distance_matrix
+
+
 
 def subclust2(data, Ra=1.5, Rb=0, AcceptRatio=0.3, RejectRatio=0.1):
     if Rb==0:
@@ -160,21 +175,37 @@ class fis:
         for input in self.inputs:
             input.view()
 #test genfis 1D
-def my_exponential(A, B, C, x):
-    return A*np.exp(-B*x)+C
-# plt.figure(figsize=(10,4))
-# plt.plot(data_x, data_y, marker='o', markersize=3, linestyle='-', color='b')
-# plt.title("Señal de Variación de Diámetro Arterial (muestreo 400 Hz)")
-# plt.xlabel("Tiempo [s]")
-# plt.ylabel("Diámetro [unidades]")
-# plt.grid(True)
+def dia_del_año(dia, mes, ano):
+    dias_mes = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    dias = sum(dias_mes[0:mes - 1]) + dia
+    if mes > 2 or (mes == 2 and dia > 28):
+        if ((ano % 400 == 0) or ((ano % 4 == 0) and (ano % 100 != 0))):
+            dias += 1
+    return dias
 
 # tus datos
+datos=pd.read_csv("spy.csv")
+data_y= datos['Close'].values
+data_dia = datos['Day'].values
+data_mes = datos['Month'].values
+data_anio = datos['Year'].values
 
-data_y= pd.read_csv("spy.csv")
-fs = 400  # Hz
-data_x = np.arange(len(data_y)) / fs  # eje temporal en segundos
-ra=0.245
+data_x = [dia_del_año(data_dia[i], data_mes[i], data_anio[i]) for i in range(len(data_y))]
+
+# Ajustar para años consecutivos
+sum_dias = 0
+data_x_corr = [data_x[0]]  # primer día tal cual
+for i in range(1, len(data_x)):
+    # Si cambio de año, sumamos los días del año anterior (365 o 366)
+    if data_x[i-1] > data_x[i]:
+        # año anterior:
+        ano_anterior = data_anio[i-1]
+        dias_anio_anterior = 366 if (ano_anterior % 400 == 0) or ((ano_anterior % 4 == 0) and (ano_anterior % 100 != 0)) else 365
+        sum_dias += dias_anio_anterior
+    data_x_corr.append(data_x[i] + sum_dias)
+
+# Ajustar para que el primer día sea 0
+data_x = [x - data_x_corr[0] for x in data_x_corr]
 data = np.vstack((data_x, data_y)).T  # Nx2
 m=data
 
@@ -182,8 +213,14 @@ reglas=[]
 error=[]
 
 
-data   = np.vstack((data_x, data_y)).T
-for i in np.arange(0.01, 0.5, 0.005):
+plt.plot(data_x, data_y, marker='o', markersize=1, linestyle='-', color='green')
+plt.title("Soy")
+plt.xlabel("Fecha")
+plt.ylabel("Valor de cierre")
+plt.xticks(rotation=90)
+#plt.show()
+
+for i in np.arange(0.1, 0.5, 0.05):
     r,c = subclust2(m,i)
    
 
@@ -194,6 +231,7 @@ for i in np.arange(0.01, 0.5, 0.005):
     fis2 = fis()
     fis2.genfis(data, i)
     fis2.viewInputs()
+    
     r = fis2.evalfis(np.vstack(data_x))
     # plt.title(f"Cantidad de clusters={len(c)}")
     
@@ -202,27 +240,27 @@ for i in np.arange(0.01, 0.5, 0.005):
     print(f"Numero de cluster {len(c)}, valor de ra{i}, error {mse:.2f} ")
     reglas.append(len(c))
     error.append(mse)
-    
-# plt.plot(reglas,error,linestyle="--")
-
-# plt.show()
-
-
-
-
-data = np.vstack((data_x, data_y)).T
-
-fis2 = fis()
-#Numero de cluster 17, valor de ra0.26499999999999996, error 19.63 
-fis2.genfis(data, 0.265)
-
-fis2.viewInputs()
-r = fis2.evalfis(np.vstack(data_x))
-
 plt.figure()
-plt.plot(data_x,data_y)
-plt.plot(data_x,r,linestyle='--')
-
-print(fis2.solutions)
+plt.plot(reglas,error,linestyle="--")
 
 plt.show()
+
+
+
+
+# data = np.vstack((data_x, data_y)).T
+
+# fis2 = fis()
+# #Numero de cluster 17, valor de ra0.26499999999999996, error 19.63 
+# fis2.genfis(data, 0.265)
+
+# fis2.viewInputs()
+# r = fis2.evalfis(np.vstack(data_x))
+
+# plt.figure()
+# plt.plot(data_x,data_y)
+# plt.plot(data_x,r,linestyle='--')
+
+# print(fis2.solutions)
+
+# plt.show()

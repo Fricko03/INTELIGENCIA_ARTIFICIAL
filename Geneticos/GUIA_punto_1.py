@@ -11,7 +11,7 @@ def binario_a_x(individuo):
 # Parámetros
 num_individuos = 6
 num_bits = 5  # porque tenemos 16 posibles valores
-random.seed(1)
+random.seed(12)
 # Generar población inicial
 poblacion = []
 for _ in range(num_individuos):
@@ -31,15 +31,15 @@ print(poblacion,sep="\n")
 def fitness(pobla):
     resultados= np.array([(300-(binario_a_x(i)-15)**2) for i in pobla])
     probs=np.array([ i/sum(resultados) for i in resultados])
-    return resultados,probs
+    return resultados#,probs
 
 def ga(individuos):
     
     mejores_individuos=individuos
     mejor_fitness_global = -np.inf
     mejor_individuo_global=None
-    for i in range(4):
-        resultados,probs=fitness(mejores_individuos)
+    for i in range(1):
+        resultados=fitness(mejores_individuos)
         idx = np.argmax(resultados)
         mejor_fitness_gen=resultados[idx]
         mejor_individuo_gen = mejores_individuos[idx]
@@ -66,7 +66,7 @@ def ga(individuos):
         
         mejores_individuos=[p1,p2,h1,h2,h3,h4]
         print("Poblacion luego cru")
-        resultados,probs=fitness(mejores_individuos)
+        resultados=fitness(mejores_individuos)
         for ind, fit in zip(mejores_individuos, resultados):
             print(f"{ind} -> x={binario_a_x(ind)} -> fitness={fit}")
         fines_original=(300-(binario_a_x(mejores_individuos[4])-15)**2)
@@ -74,10 +74,11 @@ def ga(individuos):
         h3_mutado=h3.copy()
         h3_mutado[2]=1-h3_mutado[2]
         fitness_mutacion=(300-(binario_a_x(h3)-15)**2)
-        print(h3,binario_a_x(h3), fitness_mutacion)
+        print(h3_mutado,binario_a_x(h3_mutado), fitness_mutacion)
         if(fitness_mutacion>fines_original):
             print("hubo mejora")
         else:
             print("no hubo mejora")
     print(f"Mejor individuo{mejor_individuo_global,binario_a_x(mejor_individuo_global)} Con este fitness {mejor_fitness_global}")
+    print(f"Fitness promedio{sum(fitness(mejores_individuos))/num_individuos}")
 ga(individuos=poblacion)

@@ -1,3 +1,4 @@
+from calendar import TUESDAY
 from matplotlib import figure
 from matplotlib.lines import lineStyles
 import numpy as np
@@ -184,6 +185,8 @@ plt.xlabel("Tiempo [s]")
 plt.ylabel("Diámetro [unidades]")
 plt.grid(True)
 data   = np.vstack((data_x, data_y)).T
+
+## funcion para calcular errores en base a distimtos Ra
 # for i in np.arange(0.1, 0.5, 0.05):
 #     r,c = subclust2(m,i)
    
@@ -209,8 +212,6 @@ data   = np.vstack((data_x, data_y)).T
 # plt.show()
 
 
-
-
 data = np.vstack((data_x, data_y)).T
 
 fis2 = fis()
@@ -228,7 +229,7 @@ print(fis2.solutions)
 
 plt.show()
 
-##sobre muestreo 
+#sobre muestreo 
 fismuestra=fis()
 dt = 0.0025   # paso original = 1/fs
 dt2 = dt / 2  # paso nuevo = la mitad
@@ -240,6 +241,29 @@ plt.title("Sobremuestreo")
 plt.xlabel("Tiempo")
 plt.ylabel("VDA")
 plt.plot(tiempos_muestra,estimacion_vda)
-plt.plot(data_x,data_y,linestyle="--")
+plt.plot(data_x,data_y,"k",linestyle="--")
 plt.plot(data_x,r,linestyle=':')
-plt.show()
+# plt.show()
+
+# datos_x_semi=data_x[:100]
+# datos_y_semi=data_y[:100]
+# print(datos_y_semi)
+# print(datos_x_semi.size)
+# data = np.vstack((datos_x_semi, datos_y_semi)).T  # Nx2
+
+# fismuestra2=fis()
+
+# fismuestra2.genfis(data, 0.265)
+# estimacion_vda=fismuestra2.evalfis(np.vstack(data_x[100:]))
+# plt.figure()
+# plt.title("Sobremuestreo")
+# plt.xlabel("Tiempo")
+# plt.ylabel("VDA")
+# plt.plot(datos_x_semi,datos_y_semi)
+# plt.figure()
+# plt.plot(data_x[100:],estimacion_vda)
+# plt.xlim(0,0.35)
+# plt.ylim(415, 700)
+
+
+# plt.show()
