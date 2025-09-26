@@ -187,29 +187,29 @@ plt.grid(True)
 data   = np.vstack((data_x, data_y)).T
 
 ## funcion para calcular errores en base a distimtos Ra
-# for i in np.arange(0.1, 0.5, 0.05):
-#     r,c = subclust2(m,i)
+for i in np.arange(0.1, 0.5, 0.05):
+    r,c = subclust2(m,i)
    
 
-#     # plt.figure()
-#     # plt.scatter(m[:,0],m[:,1], c=r)
-#     # plt.scatter(c[:,0],c[:,1], c="k",marker='X')
+    # plt.figure()
+    # plt.scatter(m[:,0],m[:,1], c=r)
+    # plt.scatter(c[:,0],c[:,1], c="k",marker='X')
     
-#     fis2 = fis()
-#     fis2.genfis(data, i)
-#     fis2.viewInputs()
-#     r = fis2.evalfis(np.vstack(data_x))
-#     # plt.title(f"Cantidad de clusters={len(c)}")
+    fis2 = fis()
+    fis2.genfis(data, i)
+    fis2.viewInputs()
+    r = fis2.evalfis(np.vstack(data_x))
+    # plt.title(f"Cantidad de clusters={len(c)}")
     
-#     y_pred = fis2.evalfis(np.vstack(data_x))
-#     mse = mean_squared_error(data_y, y_pred)
-#     print(f"Numero de cluster {len(c)}, valor de ra{i}, error {mse:.2f} ")
-#     reglas.append(len(c))
-#     error.append(mse)
-# plt.figure()    
-# plt.plot(reglas,error,linestyle="--")
+    y_pred = fis2.evalfis(np.vstack(data_x))
+    mse = mean_squared_error(data_y, y_pred)
+    print(f"Numero de cluster {len(c)}, valor de ra{i}, error {mse:.2f} ")
+    reglas.append(len(c))
+    error.append(mse)
+plt.figure()    
+plt.plot(reglas,error,linestyle="--")
 
-# plt.show()
+plt.show()
 
 
 data = np.vstack((data_x, data_y)).T
@@ -243,7 +243,7 @@ plt.ylabel("VDA")
 plt.plot(tiempos_muestra,estimacion_vda)
 plt.plot(data_x,data_y,"k",linestyle="--")
 plt.plot(data_x,r,linestyle=':')
-# plt.show()
+plt.show()
 
 # datos_x_semi=data_x[:100]
 # datos_y_semi=data_y[:100]
