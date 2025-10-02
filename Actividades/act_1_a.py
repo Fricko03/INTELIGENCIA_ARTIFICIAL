@@ -172,6 +172,7 @@ data_y= np.loadtxt("samplesVDA1.txt")
 fs = 400  # Hz
 data_x = np.arange(len(data_y)) / fs  # eje temporal en segundos
 ra=0.245
+
 data = np.vstack((data_x, data_y)).T  # Nx2
 m=data
 
@@ -199,7 +200,7 @@ for i in np.arange(0.1, 0.5, 0.05):
     fis2.genfis(data, i)
     fis2.viewInputs()
     r = fis2.evalfis(np.vstack(data_x))
-    # plt.title(f"Cantidad de clusters={len(c)}")
+    plt.title(f"Cantidad de clusters={len(c)}")
     
     y_pred = fis2.evalfis(np.vstack(data_x))
     mse = mean_squared_error(data_y, y_pred)
@@ -244,26 +245,3 @@ plt.plot(tiempos_muestra,estimacion_vda)
 plt.plot(data_x,data_y,"k",linestyle="--")
 plt.plot(data_x,r,linestyle=':')
 plt.show()
-
-# datos_x_semi=data_x[:100]
-# datos_y_semi=data_y[:100]
-# print(datos_y_semi)
-# print(datos_x_semi.size)
-# data = np.vstack((datos_x_semi, datos_y_semi)).T  # Nx2
-
-# fismuestra2=fis()
-
-# fismuestra2.genfis(data, 0.265)
-# estimacion_vda=fismuestra2.evalfis(np.vstack(data_x[100:]))
-# plt.figure()
-# plt.title("Sobremuestreo")
-# plt.xlabel("Tiempo")
-# plt.ylabel("VDA")
-# plt.plot(datos_x_semi,datos_y_semi)
-# plt.figure()
-# plt.plot(data_x[100:],estimacion_vda)
-# plt.xlim(0,0.35)
-# plt.ylim(415, 700)
-
-
-# plt.show()

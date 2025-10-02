@@ -13,6 +13,7 @@ from sklearn.model_selection import KFold
 
 plt.rcParams["figure.figsize"] = [3, 3]
 
+
 #Bloque de funciones:
 
 
