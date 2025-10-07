@@ -19,27 +19,23 @@ class PerceptronSimple:
     
         # Función de activación: Heaviside
     def activation(self, z):
-        return np.heaviside(z, 0)
+        return np.heaviside(z, 1)
     
     def fit(self, X, y):
-        n_features = X.shape[1]
-        
-        # Inicialización de parámetros (w y b)
-        self.weights = np.zeros((n_features))
-        self.bias = 0 # umbral
-        
-        # Iterar n épocas
+        n_samples, n_features = X.shape
+        self.weights = np.zeros(n_features)
+        self.bias = 0.0
         for epoch in range(self.epochs):
-            
-            # De a un dato a la vez
-            for i in range(len(X)):
-                z = np.dot(X, self.weights) + self.bias # Producto escalar de entradas y pesos + b
-                y_pred = self.activation(z)             # Función de activación no lineal (Heaviside)
-                
-                #Actualización de pesos y bias
-                self.weights +=  self.learning_rate * (y[i] - y_pred[i]) * X[i]
-                self.bias += self.learning_rate * (y[i] - y_pred[i])
-                
+            # shuffle each epoch (good practice)
+            indices = np.random.permutation(n_samples)
+            X_shuf = X[indices]
+            y_shuf = y[indices]
+            for xi, yi in zip(X_shuf, y_shuf):
+                z_i = np.dot(xi, self.weights) + self.bias
+                y_pred_i = 1 if z_i >= 0 else 0
+                update = self.learning_rate * (yi - y_pred_i)
+                self.weights += update * xi
+                self.bias += update
         return self.weights, self.bias
     
     def predict(self, X):
@@ -76,3 +72,4 @@ accuracy_score(sk_perceptron_pred, y_test)
 
 report = classification_report(sk_perceptron_pred, y_test, digits=2)
 print(report)
+plt.show()
